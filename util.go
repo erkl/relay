@@ -2,11 +2,31 @@ package relay
 
 import (
 	"errors"
+	"fmt"
 	"io"
+	"io/ioutil"
+	"strconv"
+	"strings"
 
 	"github.com/erkl/heat"
 	"github.com/erkl/xo"
 )
+
+// statusResponse constructs a very simple status message response.
+func statusResponse(status int, format string, args ...interface{}) *heat.Response {
+	body := fmt.Sprintf(format, args...)
+
+	// Construct response header.
+	resp := heat.NewResponse(status, heat.ReasonPhrase(status))
+	resp.Fields.Set("Connection", "close")
+	resp.Fields.Set("Content-Type", "text/plain; charset=utf-8")
+	resp.Fields.Set("Content-Length", strconv.Itoa(len(body)))
+
+	// Attach the response body.
+	resp.Body = ioutil.NopCloser(strings.NewReader(body))
+
+	return nil
+}
 
 // readRequest reads an HTTP request.
 func readRequest(r xo.Reader) (*heat.Request, *bodyReader, error) {
