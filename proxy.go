@@ -2,6 +2,7 @@ package relay
 
 import (
 	"crypto/tls"
+	"net"
 
 	"github.com/erkl/heat"
 )
@@ -13,4 +14,8 @@ type Proxy struct {
 
 	// Function used to serve HTTP requests. Must not be nil.
 	RoundTrip func(req *heat.Request) (*heat.Response, error)
+}
+
+func (p *Proxy) Serve(conn net.Conn) error {
+	return p.serveHTTP(conn)
 }
