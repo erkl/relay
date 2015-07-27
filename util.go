@@ -53,6 +53,10 @@ func readRequest(r xo.Reader) (*heat.Request, *bodyReader, error) {
 
 // writeResponse writes an HTTP response.
 func writeResponse(w xo.Writer, resp *heat.Response, method string) error {
+	if resp.Body != nil {
+		defer resp.Body.Close()
+	}
+
 	size, err := heat.ResponseBodySize(resp, method)
 	if err != nil {
 		return err

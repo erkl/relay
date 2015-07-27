@@ -78,6 +78,10 @@ func (p *Proxy) serveHTTP(conn net.Conn) error {
 }
 
 func (p *Proxy) proxy(req *heat.Request) (*heat.Response, error) {
+	if req.Body != nil {
+		defer req.Body.Close()
+	}
+
 	// Extract the destination URL.
 	u, err := url.ParseRequestURI(req.URI)
 	if err != nil {
