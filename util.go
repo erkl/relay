@@ -25,7 +25,7 @@ func statusResponse(status int, format string, args ...interface{}) *heat.Respon
 	// Attach the response body.
 	resp.Body = ioutil.NopCloser(strings.NewReader(body))
 
-	return nil
+	return resp
 }
 
 // readRequest reads an HTTP request.
