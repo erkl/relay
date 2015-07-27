@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"strconv"
 	"strings"
 
@@ -120,4 +121,26 @@ func (br *bodyReader) LastError() error {
 		return nil
 	}
 	return br.e
+}
+
+// The prefixed struct wraps a net.Conn instance and adds a prefix to it,
+// similar to io.MultiReader.
+type prefixed struct {
+	net.Conn
+	prefix []byte
+}
+
+func (c *prefixed) Read(buf []byte) (int, error) {
+	if len(c.prefix) > 0 {
+		n := copy(buf, c.prefix)
+		if n == len(c.prefix) {
+			c.prefix = nil
+		} else {
+			c.prefix = c.prefix[n:]
+		}
+
+		return n, nil
+	}
+
+	return c.Conn.Read(buf)
 }

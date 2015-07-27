@@ -42,8 +42,7 @@ func (p *Proxy) serveHTTP(conn net.Conn) error {
 
 		// Support CONNECT tunneling.
 		if req.Method == "CONNECT" {
-			// TODO: Set up a tunnel.
-			return nil
+			return p.connect(conn, rw, req)
 		}
 
 		// Will the client close this connection after receiving a response?
