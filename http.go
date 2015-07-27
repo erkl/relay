@@ -46,10 +46,6 @@ func (p *Proxy) serveHTTP(conn net.Conn) error {
 			return nil
 		}
 
-		// Populate the scheme and remote address.
-		req.Scheme = "http"
-		req.Remote = conn.RemoteAddr().String()
-
 		// Will the client close this connection after receiving a response?
 		closing := heat.Closing(req.Major, req.Minor, req.Fields)
 
