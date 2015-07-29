@@ -172,7 +172,12 @@ var blacklist = []string{
 func scrubHeaderFields(fields *heat.Fields, size heat.BodySize) {
 	// Prepare a list of "connection-tokens", describing header fields, to be
 	// removed as per section 14.10 of RFC 2616.
-	tokens := fields.Split("Connection", ',')
+	var tokens []string
+
+	fields.Split("Connection", ',', func(s string) bool {
+		tokens = append(tokens, s)
+		return true
+	})
 
 	// Remove the header fields we don't want to forward.
 	fields.Filter(func(f heat.Field) bool {
